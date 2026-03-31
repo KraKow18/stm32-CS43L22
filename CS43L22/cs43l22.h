@@ -13,10 +13,13 @@
 
 // I2C
 #define DEVICE_ADDRESS 			0x94
-#define DEVICE_PORT
-#define DEVICE_PIN
+#define DEVICE_PORT				GPIOD
+#define DEVICE_PIN				GPIO_PIN_14
 
 // REGISTERS
+#define REG_INIT_00				0x00
+#define REG_INIT_47				0x47
+#define REG_INIT_32				0x32
 #define REG_POWER_CTRL_1		0x02
 #define REG_CLOCKING_CTRL 		0x05
 #define REG_INTERFACE_CTRL_1	0x06
@@ -25,6 +28,7 @@
 #define REG_MASTER_VOL_A		0x20
 #define REG_HEADPHONE_VOL		0x22
 #define REG_SPEAKER_VOL			0X24
+
 
 // settings for startup
 typedef struct{
