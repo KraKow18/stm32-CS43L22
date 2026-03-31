@@ -12,7 +12,7 @@
 #include "stm32f4xx_hal.h"
 
 // MACROS
-#define REG_OPERATION_CHECK(operation) do{ HAL_StatusTypeDef status = (operation); \
+#define CS43_OPERATION_CHECK(operation) do{ HAL_StatusTypeDef status = (operation); \
 											if(status != HAL_OK) return status; \
 										}while(0);
 
@@ -37,10 +37,10 @@
 
 // settings for startup
 typedef struct{
-	uint8_t		resetPort;
-	uint8_t		resetPin;
-	uint32_t	sampleRateFrequency;
-	uint8_t		initialVolume;
+	GPIO_TypeDef*	resetPort;
+	uint8_t			resetPin;
+	uint32_t		sampleRateFrequency;
+	uint8_t			initialVolume;
 }CS43L22_InitTypeDef;
 
 // settings for usage

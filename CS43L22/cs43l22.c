@@ -21,29 +21,29 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22, I2C_Han
 
 	// 3) Load "power up" value in power_control_1 register
 	datasToWrite = 0x9E;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
 
 	// 4) Required initialization settings
 	datasToWrite = 0x99;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
 
 	datasToWrite = 0x80;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_47, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_47, &datasToWrite));
 
-	REG_OPERATION_CHECK(readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead));
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead));
 	tempRegisterValueRead |= (1 << 7);
 	datasToWrite = tempRegisterValueRead;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
 
-	REG_OPERATION_CHECK(readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead));
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead & ~(1 << 7);
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
 
 	datasToWrite = 0x99;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
 
 	datasToWrite = 0x00;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
 
 	// 5) Clock: 12MHz, Sample Rate = 96kHz
 	/* slave mode
@@ -57,16 +57,28 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22, I2C_Han
 	 */
 
 	// set slave mode
-	REG_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead & ~(1 << 7);
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
 
 	// set clock settings
 	datasToWrite = 0x02;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
 
 	// 6) Set power_control_1 at 0x9E
 	datasToWrite = 0x9E;
-	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
+
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite){
+	CS43_OPERATION_CHECK(HAL_I2C_Mem_Write(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, sizeof(registerAddress), datasToWrite, sizeof(datasToWrite), HAL_MAX_DELAY));
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasRead){
+	CS43_OPERATION_CHECK(HAL_I2C_Master_Receive(cs43l22->i2c, cs43l22->deviceAddress, datasRead, sizeof(datasRead), HAL_MAX_DELAY));
+	return HAL_OK;
 }
 
