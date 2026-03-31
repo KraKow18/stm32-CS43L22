@@ -55,7 +55,7 @@ typedef struct{
 }CS43L22_HandleTypeDef;
 
 // FUNCTIONS
-HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22, I2C_HandleTypeDef* i2c, uint16_t i2c_adr);
+HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22, I2C_HandleTypeDef* i2c, uint16_t i2c_adr);
 
 HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite);

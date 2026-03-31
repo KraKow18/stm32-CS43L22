@@ -7,7 +7,7 @@
 
 #include "cs43l22.h"
 
-HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22, I2C_HandleTypeDef* i2c, uint16_t i2c_adr){
+HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	// power-up sequence
 	uint8_t datasToWrite;
 	uint8_t tempRegisterValueRead;
