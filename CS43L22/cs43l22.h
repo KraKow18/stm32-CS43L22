@@ -11,6 +11,11 @@
 #include <stdint.h>
 #include "stm32f4xx_hal.h"
 
+// MACROS
+#define REG_OPERATION_CHECK(operation) do{ HAL_StatusTypeDef status = (operation); \
+											if(status != HAL_OK) return status; \
+										}while(0);
+
 // I2C
 #define DEVICE_ADDRESS 			0x94
 #define DEVICE_PORT				GPIOD

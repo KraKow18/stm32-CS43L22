@@ -19,31 +19,31 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22, I2C_Han
 	// 2) Bring /RESET high
 	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_SET);
 
-	// 3) Laod "power up" value in power_control_1 register
+	// 3) Load "power up" value in power_control_1 register
 	datasToWrite = 0x9E;
-	writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
 
 	// 4) Required initialization settings
 	datasToWrite = 0x99;
-	writeToRegister(cs43l22, REG_INIT_00, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
 
 	datasToWrite = 0x80;
-	writeToRegister(cs43l22, REG_INIT_47, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_47, &datasToWrite));
 
-	readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead);
+	REG_OPERATION_CHECK(readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead));
 	tempRegisterValueRead |= (1 << 7);
 	datasToWrite = tempRegisterValueRead;
-	writeToRegister(cs43l22, REG_INIT_32, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
 
-	readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead);
+	REG_OPERATION_CHECK(readRegister(cs43l22, REG_INIT_32, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead & ~(1 << 7);
-	writeToRegister(cs43l22, REG_INIT_32, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
 
 	datasToWrite = 0x99;
-	writeToRegister(cs43l22, REG_INIT_32, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_32, &datasToWrite));
 
 	datasToWrite = 0x00;
-	writeToRegister(cs43l22, REG_INIT_00, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
 
 	// 5) Clock: 12MHz, Sample Rate = 96kHz
 	/* slave mode
@@ -57,16 +57,16 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22, I2C_Han
 	 */
 
 	// set slave mode
-	readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead);
+	REG_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead & ~(1 << 7);
-	writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
 
 	// set clock settings
 	datasToWrite = 0x02;
-	writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
 
 	// 6) Set power_control_1 at 0x9E
 	datasToWrite = 0x9E;
-	writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite);
+	REG_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
 }
 
