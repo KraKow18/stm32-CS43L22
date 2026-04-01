@@ -8,20 +8,23 @@
 #include "cs43l22.h"
 
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
-	// power-up sequence
 	uint8_t datasToWrite;
 	uint8_t tempRegisterValueRead;
 
+	// power-up sequence
 	// 1) Hold /RESET low until power supplies are stable
 	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_RESET);
 	HAL_Delay(20);
 
 	// 2) Bring /RESET high
 	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_SET);
+	HAL_Delay(20);
 
-	// 3) Load "power up" value in power_control_1 register
-	datasToWrite = 0x9E;
+	//power-down
+	datasToWrite = 0x01;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
+
+	// 3) Nothing to do
 
 	// 4) Required initialization settings
 	datasToWrite = 0x99;
@@ -73,12 +76,12 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 }
 
 HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite){
-	CS43_OPERATION_CHECK(HAL_I2C_Mem_Write(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, sizeof(registerAddress), datasToWrite, sizeof(datasToWrite), HAL_MAX_DELAY));
+	CS43_OPERATION_CHECK(HAL_I2C_Mem_Write(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, I2C_MEMADD_SIZE_8BIT, datasToWrite, 1, HAL_MAX_DELAY));
 	return HAL_OK;
 }
 
 HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasRead){
-	CS43_OPERATION_CHECK(HAL_I2C_Master_Receive(cs43l22->i2c, cs43l22->deviceAddress, datasRead, sizeof(datasRead), HAL_MAX_DELAY));
+	CS43_OPERATION_CHECK(HAL_I2C_Mem_Read(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, I2C_MEMADD_SIZE_8BIT, datasRead, 1, HAL_MAX_DELAY));
 	return HAL_OK;
 }
 

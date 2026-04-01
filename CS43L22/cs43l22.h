@@ -18,14 +18,13 @@
 
 // I2C
 #define DEVICE_ADDRESS 			0x94
-#define DEVICE_PORT				GPIOD
-#define DEVICE_PIN				GPIO_PIN_14
 
 // REGISTERS
 #define REG_INIT_00				0x00
 #define REG_INIT_47				0x47
 #define REG_INIT_32				0x32
 #define REG_POWER_CTRL_1		0x02
+#define REG_POWER_CTRL_2		0x04
 #define REG_CLOCKING_CTRL 		0x05
 #define REG_INTERFACE_CTRL_1	0x06
 #define REG_PLAYBACK_CTRL_1 	0x0D
@@ -46,6 +45,7 @@ typedef struct{
 // settings for usage
 typedef struct{
 	I2C_HandleTypeDef*   i2c;
+	I2S_HandleTypeDef*   i2s;
 	CS43L22_InitTypeDef  Init;
 	uint8_t deviceAddress;
 	uint8_t masterVolume;
