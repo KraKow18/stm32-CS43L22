@@ -68,9 +68,33 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	datasToWrite = 0x02;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
 
-	// 6) Set power_control_1 at 0x9E
+	// 6) Set power_control_1 at 0x9E for powerup
 	datasToWrite = 0x9E;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
+
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
+	tempRegisterValueRead &= ~(3 << 4);
+	datasToWrite = tempRegisterValueRead;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
+
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
+	tempRegisterValueRead |= (3 << 4);
+	datasToWrite = tempRegisterValueRead;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
 
 	return HAL_OK;
 }
@@ -84,4 +108,3 @@ HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t register
 	CS43_OPERATION_CHECK(HAL_I2C_Mem_Read(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, I2C_MEMADD_SIZE_8BIT, datasRead, 1, HAL_MAX_DELAY));
 	return HAL_OK;
 }
-
