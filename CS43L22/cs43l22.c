@@ -83,6 +83,7 @@ HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	tempRegisterValueRead &= ~(3 << 4);
 	datasToWrite = tempRegisterValueRead;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
+	cs43l22->volumeMuted = 0;
 
 	return HAL_OK;
 }
@@ -95,6 +96,7 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	tempRegisterValueRead |= (3 << 4);
 	datasToWrite = tempRegisterValueRead;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
+	cs43l22->volumeMuted = 1;
 
 	return HAL_OK;
 }
