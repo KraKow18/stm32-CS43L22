@@ -72,6 +72,12 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	datasToWrite = 0x9E;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
 
+	// turn on headphone channel
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_POWER_CTRL_2, &tempRegisterValueRead));
+	datasToWrite = tempRegisterValueRead & ~(1 << 4);
+	datasToWrite = tempRegisterValueRead |  (1 << 5);
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_2, &datasToWrite));
+
 	return HAL_OK;
 }
 
