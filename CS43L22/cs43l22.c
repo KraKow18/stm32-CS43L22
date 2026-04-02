@@ -59,24 +59,25 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	 * => 0b00000010 = 0x02
 	 */
 
-	// set slave mode
-	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
-	datasToWrite = tempRegisterValueRead & ~(1 << 7);
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
-
 	// set clock settings
-	datasToWrite = 0x02;
+
+	// auto-detect
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_CLOCKING_CTRL, &tempRegisterValueRead));
+	datasToWrite = tempRegisterValueRead | (1 << 7);
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
+
+	// Interface control 1
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
+	datasToWrite = tempRegisterValueRead & ~(1 << 7); // set slave mode
+	datasToWrite &= ~(1 << 6); // clk polarity not inverted
+	datasToWrite &= ~(1 << 4); // dsp mode disabled
+	datasToWrite |= (1 << 2); // dac interface format: i2s, up to 24-bit data
+	datasToWrite |= (3 << 0);  // word lenght = 16 bits for i2s
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
 
 	// 6) Set power_control_1 at 0x9E for powerup
 	datasToWrite = 0x9E;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
-
-	// turn on headphone channel
-	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_POWER_CTRL_2, &tempRegisterValueRead));
-	datasToWrite = tempRegisterValueRead & ~(1 << 4);
-	datasToWrite = tempRegisterValueRead |  (1 << 5);
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_2, &datasToWrite));
 
 	return HAL_OK;
 }
@@ -107,6 +108,12 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	return HAL_OK;
 }
 
+HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
+	targetVolume = 0x01;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_VOL, &targetVolume));
+	return HAL_OK;
+}
+
 HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
 	uint8_t volumeAttenuation = 0x01; // muted by default
 
@@ -114,7 +121,7 @@ HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t tar
 	if(targetVolume < 0) targetVolume = 0;
 
 	if(targetVolume > 0){
-		volumeAttenuation = -(uint8_t)((100 - targetVolume) * 256 / 100);
+		volumeAttenuation = (uint8_t)(-(int8_t)((100 - targetVolume) * 128 / 100));
 	}
 
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_VOL, &volumeAttenuation));
