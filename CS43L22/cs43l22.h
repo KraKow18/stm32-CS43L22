@@ -57,7 +57,7 @@ HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite);
 HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasRead);
 
-HAL_StatusTypeDef setVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume);
+HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume);
 HAL_StatusTypeDef muteheadphoneOutput(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22);
 

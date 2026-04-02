@@ -101,6 +101,20 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	return HAL_OK;
 }
 
+HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
+	uint8_t volumeAttenuation = 0x01; // muted by default
+
+	if(targetVolume > 100) targetVolume = 100;
+	if(targetVolume < 0) targetVolume = 0;
+
+	if(targetVolume > 0){
+		volumeAttenuation = -(uint8_t)((100 - targetVolume) * 256 / 100);
+	}
+
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_VOL, &volumeAttenuation));
+	return HAL_OK;
+}
+
 HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite){
 	CS43_OPERATION_CHECK(HAL_I2C_Mem_Write(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, I2C_MEMADD_SIZE_8BIT, datasToWrite, 1, HAL_MAX_DELAY));
 	return HAL_OK;
