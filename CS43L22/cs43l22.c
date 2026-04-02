@@ -48,25 +48,15 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	datasToWrite = 0x00;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
 
-	// 5) Clock: 12MHz, Sample Rate = 96kHz
-	/* slave mode
-	 * auto_detect = 0
-	 * Speed mode = 00 double-speed mode (slave mode)
-	 * 32k sample rate group = 0
-	 * videoclk = 0
-	 * mclk/lrck ratio = 01
-	 * mclkdiv2 = 0
-	 * => 0b00000010 = 0x02
-	 */
-
-	// set clock settings
+	// 5) set clock settings
 
 	// auto-detect
 	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_CLOCKING_CTRL, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead | (1 << 7);
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
 
-	// Interface control 1
+
+	// Interface control 1 => not in recommended sequence but have to do it
 	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead & ~(1 << 7); // set slave mode
 	datasToWrite &= ~(1 << 6); // clk polarity not inverted
@@ -110,7 +100,7 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 
 HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
 	targetVolume = 0x01;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_VOL, &targetVolume));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
 	return HAL_OK;
 }
 
@@ -124,7 +114,8 @@ HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t tar
 		volumeAttenuation = (uint8_t)(-(int8_t)((100 - targetVolume) * 128 / 100));
 	}
 
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_VOL, &volumeAttenuation));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &volumeAttenuation)); // HPA
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_B_VOL, &volumeAttenuation)); // HPB
 	return HAL_OK;
 }
 
