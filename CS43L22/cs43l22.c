@@ -12,13 +12,13 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t tempRegisterValueRead;
 
 	// power-up sequence
+
 	// 1) Hold /RESET low until power supplies are stable
 	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_RESET);
 	HAL_Delay(20);
 
 	// 2) Bring /RESET high
 	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_SET);
-	HAL_Delay(20);
 
 	//power-down
 	datasToWrite = 0x01;
@@ -64,6 +64,17 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	datasToWrite |= (1 << 2); // dac interface format: i2s, up to 24-bit data
 	datasToWrite |= (3 << 0);  // word lenght = 16 bits for i2s
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
+
+	// PCM A & B volume at 0dB
+	datasToWrite = 0x00;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &datasToWrite));
+
+	// Master Volume at 0dB
+	datasToWrite = 0x00;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &datasToWrite));
+
+
 
 	// 6) Set power_control_1 at 0x9E for powerup
 	datasToWrite = 0x9E;

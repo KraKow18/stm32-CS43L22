@@ -29,6 +29,8 @@
 #define REG_HEADPHONE_A_VOL		0x22
 #define REG_HEADPHONE_B_VOL		0x23
 #define REG_SPEAKER_VOL			0X24
+#define REG_PCMA_VOL			0x1A
+#define REG_PCMB_VOL			0x1B
 
 
 // settings for startup
