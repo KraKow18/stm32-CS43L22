@@ -94,6 +94,19 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	return HAL_OK;
 }
 
+HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
+	tempRegisterValueRead &= ~(3 << 4);
+	datasToWrite = tempRegisterValueRead;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
+	cs43l22->volumeMuted = 0;
+
+	return HAL_OK;
+}
+
 HAL_StatusTypeDef muteAllOutputs(CS43L22_HandleTypeDef* cs43l22){
     uint8_t datasToWrite;
     uint8_t tempRegisterValueRead;
@@ -169,19 +182,6 @@ static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22){
 	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_CLOCKING_CTRL, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead | (1 << 7);
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
-
-	return HAL_OK;
-}
-
-HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
-	uint8_t datasToWrite;
-	uint8_t tempRegisterValueRead;
-
-	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
-	tempRegisterValueRead &= ~(3 << 4);
-	datasToWrite = tempRegisterValueRead;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
-	cs43l22->volumeMuted = 0;
 
 	return HAL_OK;
 }
