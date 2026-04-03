@@ -158,9 +158,9 @@ static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22){
 }
 
 static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, uint8_t targetVolume){
-	uint8_t datasToWrite = 0x00;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &datasToWrite));
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &datasToWrite));
+	targetVolume = 0x00;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &targetVolume));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &targetVolume));
 	return HAL_OK;
 }
 
