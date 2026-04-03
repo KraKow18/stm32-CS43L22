@@ -66,11 +66,11 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
 	uint8_t volumeAttenuation = 0x01; // muted by default
 
-	if(targetVolume > 100) targetVolume = 100;
-	if(targetVolume < 0) targetVolume = 0;
+	if(targetVolume > HEADPHONE_MAX_VOL) targetVolume = HEADPHONE_MAX_VOL;
+	if(targetVolume < HEADPHONE_MIN_VOL) targetVolume = HEADPHONE_MIN_VOL;
 
-	if(targetVolume > 0){
-		volumeAttenuation = (uint8_t)(-(int8_t)((100 - targetVolume) * 128 / 100));
+	if(targetVolume > HEADPHONE_MIN_VOL){
+		volumeAttenuation = (uint8_t)(-(int8_t)((HEADPHONE_MAX_VOL - targetVolume) * 128 / HEADPHONE_MAX_VOL));
 	}
 
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &volumeAttenuation)); // HPA

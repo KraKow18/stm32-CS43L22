@@ -36,6 +36,8 @@
 // const
 #define MASTER_MIN_GAIN		-102.0f
 #define MASTER_MAX_GAIN		12.0f
+#define HEADPHONE_MAX_VOL	100
+#define HEADPHONE_MIN_VOL	0
 
 
 // settings for startup
