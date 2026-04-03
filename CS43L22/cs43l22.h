@@ -75,6 +75,7 @@ static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, flo
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22);
 static HAL_StatusTypeDef enableDigitalSoftRamp(CS43L22_HandleTypeDef* cs43l22);
 static HAL_StatusTypeDef enableDigitalZeroCross(CS43L22_HandleTypeDef* cs43l22);
+static HAL_StatusTypeDef disableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22);
 
 // public functions
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22);

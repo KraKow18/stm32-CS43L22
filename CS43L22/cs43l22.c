@@ -66,6 +66,7 @@ HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(muteAllOutputs(cs43l22));
 
 	// 2) disable soft ramp and zero cross transitions
+	CS43_OPERATION_CHECK(disableDigitalSoftRampAndZeroCross(cs43l22));
 
 	// 3) power ctrl 1 = 0x9F
 
@@ -243,6 +244,21 @@ static HAL_StatusTypeDef enableDigitalZeroCross(CS43L22_HandleTypeDef* cs43l22){
 
 	return HAL_OK;
 }
+
+static HAL_StatusTypeDef disableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_MISC_CTRL, &tempRegisterValueRead));
+	datasToWrite = tempRegisterValueRead & ~(1 << 0);
+	datasToWrite &= ~(1 << 1);
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_MISC_CTRL, &datasToWrite));
+
+	return HAL_OK;
+}
+
+
+
 
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t datasToWrite = 0xAF;
