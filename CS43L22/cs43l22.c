@@ -69,12 +69,17 @@ HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(disableDigitalSoftRampAndZeroCross(cs43l22));
 
 	// 3) power ctrl 1 = 0x9F
+	datasToWrite = 0x9E;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
 
 	// 4) wait at least 100µs
+	HAL_Delay(1);
 
 	// 5) MCLK removed
+	HAL_I2S_DMAStop(cs43l22->i2s);
 
 	// 6) reset = low
+	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_RESET);
 
 	return HAL_OK;
 }
