@@ -25,13 +25,8 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	// 4) Required initialization settings
 	CS43_OPERATION_CHECK(initializeRequiredRegisters(cs43l22));
 
-	// 5) set clock settings
-
-	// auto-detect
-	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_CLOCKING_CTRL, &tempRegisterValueRead));
-	datasToWrite = tempRegisterValueRead | (1 << 7);
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
-
+	// 5) configure clock settings
+	CS43_OPERATION_CHECK(configureClock(cs43l22));
 
 	// Interface control 1 => not in recommended sequence but have to do it
 	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
@@ -74,6 +69,7 @@ static void wakeupDevice(CS43L22_HandleTypeDef *cs43l22) {
 static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43l22){
 	uint8_t datasToWrite;
 	uint8_t tempRegisterValueRead;
+
 	datasToWrite = 0x99;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
 
@@ -95,6 +91,16 @@ static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43
 	datasToWrite = 0x00;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
 	return HAL_OK;
+}
+
+static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	// auto-detect
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_CLOCKING_CTRL, &tempRegisterValueRead));
+	datasToWrite = tempRegisterValueRead | (1 << 7);
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
 }
 
 HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
