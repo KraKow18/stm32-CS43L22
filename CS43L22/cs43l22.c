@@ -34,9 +34,7 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(configureI2SInterface(cs43l22));
 
 	// PCM A & B volume at 0dB
-	datasToWrite = 0x00;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &datasToWrite));
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &datasToWrite));
+	CS43_OPERATION_CHECK(setPCMVolumeForAllChannels(cs43l22, 0));
 
 	// Master Volume at 0dB
 	datasToWrite = 0x00;
@@ -163,6 +161,13 @@ static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22){
 	datasToWrite |= (3 << 0);  // word lenght = 16 bits for i2s
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
 
+	return HAL_OK;
+}
+
+static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, uint8_t targetVolume){
+	uint8_t datasToWrite = 0x00;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &datasToWrite));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &datasToWrite));
 	return HAL_OK;
 }
 
