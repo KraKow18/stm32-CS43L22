@@ -37,8 +37,7 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(setPCMVolumeForAllChannels(cs43l22, 0));
 
 	// Master Volume at 0dB
-	datasToWrite = 0x00;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &datasToWrite));
+	CS43_OPERATION_CHECK(setMasterVolume(cs43l22, 0));
 
 	// Headphone A & B channels are always ON
 	// Speaker A & B channels are always OFF
@@ -62,12 +61,6 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
 	cs43l22->volumeMuted = 1;
 
-	return HAL_OK;
-}
-
-HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
-	targetVolume = 0x01;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
 	return HAL_OK;
 }
 
@@ -168,6 +161,12 @@ static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l
 	uint8_t datasToWrite = 0x00;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &datasToWrite));
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &datasToWrite));
+	return HAL_OK;
+}
+
+static HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
+	targetVolume = 0x00;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
 	return HAL_OK;
 }
 
