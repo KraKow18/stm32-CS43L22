@@ -138,12 +138,14 @@ HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t tar
 
 // ---------- PRIVATE FUNCTIONS ---------- //
 
-static void wakeupDevice(CS43L22_HandleTypeDef *cs43l22) {
+static HAL_StatusTypeDef wakeupDevice(CS43L22_HandleTypeDef *cs43l22) {
 	// 1) Hold /RESET low until power supplies are stable
 	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_RESET);
 	HAL_Delay(20);
 	// 2) Bring /RESET high
 	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_SET);
+
+	return HAL_OK;
 }
 
 static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43l22){
