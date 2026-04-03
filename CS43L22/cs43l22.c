@@ -69,7 +69,7 @@ HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(disableDigitalSoftRampAndZeroCross(cs43l22));
 
 	// 3) power ctrl 1 = 0x9F
-	datasToWrite = 0x9E;
+	datasToWrite = 0x9F;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
 
 	// 4) wait at least 100µs
@@ -261,8 +261,6 @@ static HAL_StatusTypeDef disableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDe
 
 	return HAL_OK;
 }
-
-
 
 
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22){
