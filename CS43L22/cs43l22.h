@@ -82,6 +82,7 @@ HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume);
 HAL_StatusTypeDef muteheadphoneOutput(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22);
+HAL_StatusTypeDef muteAllOutputs(CS43L22_HandleTypeDef* cs43l22);
 
 
 #endif /* CS43L22_H_ */

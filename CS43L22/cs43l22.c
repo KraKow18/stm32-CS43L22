@@ -56,17 +56,51 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	return HAL_OK;
 }
 
+HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22){
+
+	// ----- POWER-DOWN SEQUENCE ----- //
+
+	uint8_t datasToWrite;
+
+	// 1) Mute headphone and speaker
+	CS43_OPERATION_CHECK(muteAllOutputs(cs43l22));
+
+	// 2) disable soft ramp and zero cross transitions
+
+	// 3) power ctrl 1 = 0x9F
+
+	// 4) wait at least 100µs
+
+	// 5) MCLK removed
+
+	// 6) reset = low
+
+	return HAL_OK;
+}
+
 HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t datasToWrite;
 	uint8_t tempRegisterValueRead;
 
 	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
-	tempRegisterValueRead |= (3 << 4);
+	tempRegisterValueRead |= (3 << 6);
 	datasToWrite = tempRegisterValueRead;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
 	cs43l22->volumeMuted = 1;
 
 	return HAL_OK;
+}
+
+HAL_StatusTypeDef muteAllOutputs(CS43L22_HandleTypeDef* cs43l22){
+    uint8_t datasToWrite;
+    uint8_t tempRegisterValueRead;
+
+    CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
+    datasToWrite = tempRegisterValueRead | (0xF << 4); // HP + SPK
+    CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
+    cs43l22->volumeMuted = 1;
+
+    return HAL_OK;
 }
 
 HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
