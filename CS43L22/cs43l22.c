@@ -41,8 +41,7 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 
 	// Headphone A & B channels are always ON
 	// Speaker A & B channels are always OFF
-	datasToWrite = 0xAF;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_2, &datasToWrite));
+	CS43_OPERATION_CHECK(powerHeadphoneOnly(cs43l22));
 
 	// 6) Set power_control_1 at 0x9E for powerup
 	datasToWrite = 0x9E;
@@ -167,6 +166,12 @@ static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l
 static HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
 	targetVolume = 0x00;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
+	return HAL_OK;
+}
+
+static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22){
+	uint8_t datasToWrite = 0xAF;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_2, &datasToWrite));
 	return HAL_OK;
 }
 
