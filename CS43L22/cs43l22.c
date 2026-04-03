@@ -75,8 +75,8 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &datasToWrite));
 
 	// Headphone A & B channels are always ON
-	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_POWER_CTRL_2, &tempRegisterValueRead));
-	datasToWrite = tempRegisterValueRead | (10 << 4);
+	// Speaker A & B channels are always OFF
+	datasToWrite = 0xAF;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_2, &datasToWrite));
 
 	// 6) Set power_control_1 at 0x9E for powerup
