@@ -9,7 +9,6 @@
 
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t datasToWrite;
-	uint8_t tempRegisterValueRead;
 
 	// ----- POWER-UP SEQUENCE -----
 
@@ -29,13 +28,7 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(configureClock(cs43l22));
 
 	// Interface control 1 => not in recommended sequence but have to do it
-	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
-	datasToWrite = tempRegisterValueRead & ~(1 << 7); // set slave mode
-	datasToWrite &= ~(1 << 6); // clk polarity not inverted
-	datasToWrite &= ~(1 << 4); // dsp mode disabled
-	datasToWrite |= (1 << 2); // dac interface format: i2s, up to 24-bit data
-	datasToWrite |= (3 << 0);  // word lenght = 16 bits for i2s
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
+	CS43_OPERATION_CHECK(configureI2SInterface(cs43l22));
 
 	// PCM A & B volume at 0dB
 	datasToWrite = 0x00;
@@ -57,6 +50,8 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 
 	return HAL_OK;
 }
+
+// ---------- PRIVATE FUNCTIONS ---------- //
 
 static void wakeupDevice(CS43L22_HandleTypeDef *cs43l22) {
 	// 1) Hold /RESET low until power supplies are stable
@@ -101,6 +96,8 @@ static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22){
 	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_CLOCKING_CTRL, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead | (1 << 7);
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_CLOCKING_CTRL, &datasToWrite));
+
+	return HAL_OK;
 }
 
 HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
@@ -116,6 +113,22 @@ HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	return HAL_OK;
 }
 
+static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_INTERFACE_CTRL_1, &tempRegisterValueRead));
+	datasToWrite = tempRegisterValueRead & ~(1 << 7); // set slave mode
+	datasToWrite &= ~(1 << 6); // clk polarity not inverted
+	datasToWrite &= ~(1 << 4); // dsp mode disabled
+	datasToWrite |= (1 << 2); // dac interface format: i2s, up to 24-bit data
+	datasToWrite |= (3 << 0);  // word lenght = 16 bits for i2s
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
+
+	return HAL_OK;
+}
+
+// ---------- PUBLIC FUNCTIONS ---------- //
 HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t datasToWrite;
 	uint8_t tempRegisterValueRead;

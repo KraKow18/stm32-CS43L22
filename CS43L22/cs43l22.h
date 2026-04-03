@@ -59,6 +59,7 @@ static HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t r
 static void wakeupDevice(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22);
+static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22);
 
 // public functions
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22);
