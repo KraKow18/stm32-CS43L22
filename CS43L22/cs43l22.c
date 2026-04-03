@@ -39,8 +39,11 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	// Master Volume at 0dB
 	CS43_OPERATION_CHECK(setMasterGainVolume(cs43l22, 0.0f));
 
-	// digital soft ramp
+	// enable digital soft ramp
 	CS43_OPERATION_CHECK(enableDigitalSoftRamp(cs43l22));
+
+	// enable digital zero cross
+	CS43_OPERATION_CHECK(enableDigitalZeroCross(cs43l22));
 
 	// Headphone A & B channels are always ON
 	// Speaker A & B channels are always OFF
@@ -191,6 +194,17 @@ static HAL_StatusTypeDef enableDigitalSoftRamp(CS43L22_HandleTypeDef* cs43l22){
 
 	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_MISC_CTRL, &tempRegisterValueRead));
 	datasToWrite = tempRegisterValueRead | (1 << 1);
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_MISC_CTRL, &datasToWrite));
+
+	return HAL_OK;
+}
+
+static HAL_StatusTypeDef enableDigitalZeroCross(CS43L22_HandleTypeDef* cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_MISC_CTRL, &tempRegisterValueRead));
+	datasToWrite = tempRegisterValueRead | (1 << 0);
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_MISC_CTRL, &datasToWrite));
 
 	return HAL_OK;
