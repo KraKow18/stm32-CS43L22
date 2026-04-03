@@ -16,7 +16,7 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	// ----- POWER-UP SEQUENCE -----
 
 	// 1)
-	wakeupDevice(cs43l22);
+	CS43_OPERATION_CHECK(wakeupDevice(cs43l22));
 
 	// 2) power-down
 	datasToWrite = 0x01;
