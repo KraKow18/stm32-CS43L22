@@ -73,8 +73,7 @@ static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, float targetGaindB);
 static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetGaindB);
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22);
-static HAL_StatusTypeDef enableDigitalSoftRamp(CS43L22_HandleTypeDef* cs43l22);
-static HAL_StatusTypeDef enableDigitalZeroCross(CS43L22_HandleTypeDef* cs43l22);
+static HAL_StatusTypeDef enableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22);
 static HAL_StatusTypeDef disableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22);
 
 // public functions
