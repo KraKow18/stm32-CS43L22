@@ -30,6 +30,7 @@
 #define REG_HEADPHONE_A_VOL		0x22
 #define REG_HEADPHONE_B_VOL		0x23
 #define REG_SPEAKER_VOL			0X24
+#define REG_MISC_CTRL			0x0E
 #define REG_PCM_A_VOL			0x1A
 #define REG_PCM_B_VOL			0x1B
 
@@ -72,6 +73,7 @@ static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, float targetGaindB);
 static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetGaindB);
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22);
+static HAL_StatusTypeDef enableDigitalSoftRamp(CS43L22_HandleTypeDef* cs43l22);
 
 // public functions
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22);
