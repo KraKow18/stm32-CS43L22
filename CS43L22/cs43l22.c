@@ -75,6 +75,7 @@ HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t tar
 
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &volumeAttenuation)); // HPA
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_B_VOL, &volumeAttenuation)); // HPB
+
 	return HAL_OK;
 }
 
@@ -113,6 +114,7 @@ static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43
 
 	datasToWrite = 0x00;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INIT_00, &datasToWrite));
+
 	return HAL_OK;
 }
 
@@ -160,27 +162,32 @@ static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l
 	targetVolume = 0x00;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &targetVolume));
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &targetVolume));
+
 	return HAL_OK;
 }
 
 static HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
 	targetVolume = 0x00;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
+
 	return HAL_OK;
 }
 
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t datasToWrite = 0xAF;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_2, &datasToWrite));
+
 	return HAL_OK;
 }
 
 static HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite){
 	CS43_OPERATION_CHECK(HAL_I2C_Mem_Write(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, I2C_MEMADD_SIZE_8BIT, datasToWrite, 1, HAL_MAX_DELAY));
+
 	return HAL_OK;
 }
 
 static HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasRead){
 	CS43_OPERATION_CHECK(HAL_I2C_Mem_Read(cs43l22->i2c, cs43l22->deviceAddress, registerAddress, I2C_MEMADD_SIZE_8BIT, datasRead, 1, HAL_MAX_DELAY));
+
 	return HAL_OK;
 }
