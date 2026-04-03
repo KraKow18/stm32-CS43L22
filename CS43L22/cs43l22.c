@@ -253,7 +253,12 @@ static HAL_StatusTypeDef disableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDe
 
 
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22){
-	uint8_t datasToWrite = 0xAF;
+	uint8_t datasToWrite = 0x00;
+
+	datasToWrite |= (2 << 6);  // SPK A : always off
+	datasToWrite |= (2 << 4);  // SPK B : always off
+	datasToWrite |= (3 << 2);  // HP A  : always on
+	datasToWrite |= (3 << 0);  // HP B  : always on
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_2, &datasToWrite));
 
 	return HAL_OK;
