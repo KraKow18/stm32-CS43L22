@@ -34,7 +34,7 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(configureI2SInterface(cs43l22));
 
 	// PCM A & B volume at 0dB
-	CS43_OPERATION_CHECK(setPCMVolumeForAllChannels(cs43l22, 0));
+	CS43_OPERATION_CHECK(setPCMVolumeForAllChannels(cs43l22, 0.0f));
 
 	// Master Volume at 0dB
 	CS43_OPERATION_CHECK(setMasterGainVolume(cs43l22, 0.0f));
@@ -158,10 +158,14 @@ static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22){
 	return HAL_OK;
 }
 
-static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, uint8_t targetVolume){
-	targetVolume = 0x00;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMA_VOL, &targetVolume));
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCMB_VOL, &targetVolume));
+static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, float targetGaindB){
+	if(targetGaindB > PCM_MAX_GAIN) targetGaindB =  PCM_MAX_GAIN;
+	if(targetGaindB < PCM_MIN_GAIN) targetGaindB = PCM_MIN_GAIN;
+
+	uint8_t finalGain = (uint8_t)(int8_t)(targetGaindB * 2.0f); // double cast pour complement a 2
+
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCM_A_VOL, &finalGain));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PCM_B_VOL, &finalGain));
 
 	return HAL_OK;
 }

@@ -30,12 +30,14 @@
 #define REG_HEADPHONE_A_VOL		0x22
 #define REG_HEADPHONE_B_VOL		0x23
 #define REG_SPEAKER_VOL			0X24
-#define REG_PCMA_VOL			0x1A
-#define REG_PCMB_VOL			0x1B
+#define REG_PCM_A_VOL			0x1A
+#define REG_PCM_B_VOL			0x1B
 
-// const
+// volume defines
 #define MASTER_MIN_GAIN		-102.0f
 #define MASTER_MAX_GAIN		12.0f
+#define PCM_MIN_GAIN		-51.5f
+#define PCM_MAX_GAIN		12.0f
 #define HEADPHONE_MAX_VOL	100
 #define HEADPHONE_MIN_VOL	0
 
@@ -67,8 +69,8 @@ static void wakeupDevice(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22);
-static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, uint8_t targetVolume);
-static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetVolume);
+static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, float targetGaindB);
+static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetGaindB);
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22);
 
 // public functions
