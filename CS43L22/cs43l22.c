@@ -37,7 +37,7 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	CS43_OPERATION_CHECK(setPCMVolumeForAllChannels(cs43l22, 0));
 
 	// Master Volume at 0dB
-	CS43_OPERATION_CHECK(setMasterVolume(cs43l22, 0));
+	CS43_OPERATION_CHECK(setMasterGainVolume(cs43l22, 0.0f));
 
 	// Headphone A & B channels are always ON
 	// Speaker A & B channels are always OFF
@@ -166,9 +166,14 @@ static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l
 	return HAL_OK;
 }
 
-static HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
-	targetVolume = 0x00;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
+static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetGaindB){
+	if(targetGaindB > MASTER_MAX_GAIN) targetGaindB =  MASTER_MAX_GAIN;
+	if(targetGaindB < MASTER_MIN_GAIN) targetGaindB = MASTER_MIN_GAIN;
+
+	uint8_t finalGain = (uint8_t)(int8_t)(targetGaindB * 2.0f); // double cast pour complement a 2
+
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_MASTER_A_VOL, &finalGain));
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_MASTER_B_VOL, &finalGain));
 
 	return HAL_OK;
 }

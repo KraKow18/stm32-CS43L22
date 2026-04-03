@@ -25,12 +25,17 @@
 #define REG_INTERFACE_CTRL_1	0x06
 #define REG_PLAYBACK_CTRL_1 	0x0D
 #define REG_PLAYBACK_CTRL_2 	0x0F
-#define REG_MASTER_VOL_A		0x20
+#define REG_MASTER_A_VOL		0x20
+#define REG_MASTER_B_VOL		0x21
 #define REG_HEADPHONE_A_VOL		0x22
 #define REG_HEADPHONE_B_VOL		0x23
 #define REG_SPEAKER_VOL			0X24
 #define REG_PCMA_VOL			0x1A
 #define REG_PCMB_VOL			0x1B
+
+// const
+#define MASTER_MIN_GAIN		-102.0f
+#define MASTER_MAX_GAIN		12.0f
 
 
 // settings for startup
@@ -61,7 +66,7 @@ static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43
 static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22);
 static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, uint8_t targetVolume);
-static HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume);
+static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetVolume);
 static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22);
 
 // public functions
