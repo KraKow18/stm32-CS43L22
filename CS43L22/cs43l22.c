@@ -119,6 +119,18 @@ HAL_StatusTypeDef muteAllOutputs(CS43L22_HandleTypeDef* cs43l22){
     return HAL_OK;
 }
 
+HAL_StatusTypeDef unmuteAllOutputs(CS43L22_HandleTypeDef* cs43l22){
+    uint8_t datasToWrite;
+    uint8_t tempRegisterValueRead;
+
+    CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
+    datasToWrite = tempRegisterValueRead & ~(0xF << 4);
+    CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
+    cs43l22->volumeMuted = 0;
+
+    return HAL_OK;
+}
+
 HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
 	uint8_t volumeAttenuation = 0x01; // muted by default
 
