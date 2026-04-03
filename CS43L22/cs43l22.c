@@ -7,6 +7,9 @@
 
 #include "cs43l22.h"
 
+
+// ---------- PUBLIC FUNCTIONS ---------- //
+
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t datasToWrite;
 
@@ -50,6 +53,41 @@ HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 
 	return HAL_OK;
 }
+
+HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
+	uint8_t datasToWrite;
+	uint8_t tempRegisterValueRead;
+
+	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
+	tempRegisterValueRead |= (3 << 4);
+	datasToWrite = tempRegisterValueRead;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
+	cs43l22->volumeMuted = 1;
+
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
+	targetVolume = 0x01;
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
+	uint8_t volumeAttenuation = 0x01; // muted by default
+
+	if(targetVolume > 100) targetVolume = 100;
+	if(targetVolume < 0) targetVolume = 0;
+
+	if(targetVolume > 0){
+		volumeAttenuation = (uint8_t)(-(int8_t)((100 - targetVolume) * 128 / 100));
+	}
+
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &volumeAttenuation)); // HPA
+	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_B_VOL, &volumeAttenuation)); // HPB
+	return HAL_OK;
+}
+
 
 // ---------- PRIVATE FUNCTIONS ---------- //
 
@@ -125,41 +163,6 @@ static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22){
 	datasToWrite |= (3 << 0);  // word lenght = 16 bits for i2s
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_INTERFACE_CTRL_1, &datasToWrite));
 
-	return HAL_OK;
-}
-
-// ---------- PUBLIC FUNCTIONS ---------- //
-HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
-	uint8_t datasToWrite;
-	uint8_t tempRegisterValueRead;
-
-	CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
-	tempRegisterValueRead |= (3 << 4);
-	datasToWrite = tempRegisterValueRead;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
-	cs43l22->volumeMuted = 1;
-
-	return HAL_OK;
-}
-
-HAL_StatusTypeDef setMasterVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
-	targetVolume = 0x01;
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &targetVolume));
-	return HAL_OK;
-}
-
-HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t targetVolume){
-	uint8_t volumeAttenuation = 0x01; // muted by default
-
-	if(targetVolume > 100) targetVolume = 100;
-	if(targetVolume < 0) targetVolume = 0;
-
-	if(targetVolume > 0){
-		volumeAttenuation = (uint8_t)(-(int8_t)((100 - targetVolume) * 128 / 100));
-	}
-
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &volumeAttenuation)); // HPA
-	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_B_VOL, &volumeAttenuation)); // HPB
 	return HAL_OK;
 }
 
