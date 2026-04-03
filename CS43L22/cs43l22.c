@@ -7,19 +7,21 @@
 
 #include "cs43l22.h"
 
+static void wakeupDevice(CS43L22_HandleTypeDef *cs43l22) {
+	// 1) Hold /RESET low until power supplies are stable
+	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_RESET);
+	HAL_Delay(20);
+	// 2) Bring /RESET high
+	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_SET);
+}
+
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22){
 	uint8_t datasToWrite;
 	uint8_t tempRegisterValueRead;
 
 	// power-up sequence
 
-	// 1) Hold /RESET low until power supplies are stable
-	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_RESET);
-	HAL_Delay(20);
-
-	// 2) Bring /RESET high
-	HAL_GPIO_WritePin(cs43l22->Init.resetPort, cs43l22->Init.resetPin, GPIO_PIN_SET);
-
+	wakeupDevice(cs43l22);
 	//power-down
 	datasToWrite = 0x01;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_POWER_CTRL_1, &datasToWrite));
