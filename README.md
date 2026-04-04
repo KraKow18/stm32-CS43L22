@@ -33,8 +33,7 @@ static void cs43_config()
 - CS43_Reset_GPIO_Port and CS43_Reset_Pin design the PIN RESET of the device (for example on the STM32F407 discovery, it's PD4).
 - Device address is defined by the manufacturer.
 - The sample rate of the device is correlated to the sample rate of the I2S protocol, 96kHz in this example:
-- DMA must be configured in Circular mode on the I2S TX channel,
-- otherwise audio stops after one buffer.
+- DMA must be configured in Circular mode on the I2S TX channel, otherwise audio stops after one buffer.
 
 ```c
 static void MX_I2S3_Init(void)
