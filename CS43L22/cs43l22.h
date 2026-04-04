@@ -52,8 +52,6 @@ typedef struct{
 	//public
 	GPIO_TypeDef*	resetPort;
 	uint8_t			resetPin;
-	uint32_t		sampleRateFrequency;
-	uint8_t			initialVolume;
 }CS43L22_InitTypeDef;
 
 // settings for usage
@@ -96,7 +94,5 @@ uint8_t getHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22);
 uint8_t getSpeakerVolume(CS43L22_HandleTypeDef* cs43l22);
 outputState getHeadphoneOutputState(CS43L22_HandleTypeDef* cs43l22);
 outputState getSpeakerOutputState(CS43L22_HandleTypeDef* cs43l22);
-
-
 
 #endif /* CS43L22_H_ */
