@@ -7,6 +7,19 @@
 
 #include "cs43l22.h"
 
+// private functions
+static HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite);
+static HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasRead);
+static HAL_StatusTypeDef wakeupDevice(CS43L22_HandleTypeDef *cs43l22);
+static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43l22);
+static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22);
+static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22);
+static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, float targetGaindB);
+static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetGaindB);
+static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22);
+static HAL_StatusTypeDef enableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22);
+static HAL_StatusTypeDef disableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22);
+
 
 // ---------- PUBLIC FUNCTIONS ---------- //
 

@@ -69,19 +69,6 @@ typedef struct{
 	outputState headphoneState;
 }CS43L22_HandleTypeDef;
 
-// private functions
-static HAL_StatusTypeDef writeToRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasToWrite);
-static HAL_StatusTypeDef readRegister(CS43L22_HandleTypeDef* cs43l22, uint16_t registerAddress, uint8_t* datasRead);
-static HAL_StatusTypeDef wakeupDevice(CS43L22_HandleTypeDef *cs43l22);
-static HAL_StatusTypeDef initializeRequiredRegisters(CS43L22_HandleTypeDef *cs43l22);
-static HAL_StatusTypeDef configureClock(CS43L22_HandleTypeDef *cs43l22);
-static HAL_StatusTypeDef configureI2SInterface(CS43L22_HandleTypeDef *cs43l22);
-static HAL_StatusTypeDef setPCMVolumeForAllChannels(CS43L22_HandleTypeDef *cs43l22, float targetGaindB);
-static HAL_StatusTypeDef setMasterGainVolume(CS43L22_HandleTypeDef* cs43l22, float targetGaindB);
-static HAL_StatusTypeDef powerHeadphoneOnly(CS43L22_HandleTypeDef* cs43l22);
-static HAL_StatusTypeDef enableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22);
-static HAL_StatusTypeDef disableDigitalSoftRampAndZeroCross(CS43L22_HandleTypeDef* cs43l22);
-
 // public functions
 HAL_StatusTypeDef CS43L22_Initialization(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef CS43L22_Reset(CS43L22_HandleTypeDef* cs43l22);
