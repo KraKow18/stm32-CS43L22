@@ -9,7 +9,7 @@ This basic driver is intended to be used with the headphone output only.
 - Mute/Unmute headphone output
 - Mute/Unmute all outputs
 
--> Future developement will include speakers monitoring and beep generator for fast debugging.
+Future developement will include speakers monitoring and beep generator for fast debugging.
 
 ## Basic usage:
 
