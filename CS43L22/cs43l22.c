@@ -89,7 +89,7 @@ HAL_StatusTypeDef muteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	tempRegisterValueRead |= (3 << 6);
 	datasToWrite = tempRegisterValueRead;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
-	cs43l22->volumeMuted = 1;
+	cs43l22->headphoneState = MUTED;
 
 	return HAL_OK;
 }
@@ -102,7 +102,7 @@ HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22){
 	tempRegisterValueRead &= ~(3 << 6);
 	datasToWrite = tempRegisterValueRead;
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
-	cs43l22->volumeMuted = 0;
+	cs43l22->headphoneState = UNMUTED;
 
 	return HAL_OK;
 }
@@ -114,7 +114,8 @@ HAL_StatusTypeDef muteAllOutputs(CS43L22_HandleTypeDef* cs43l22){
     CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
     datasToWrite = tempRegisterValueRead | (0xF << 4); // HP + SPK
     CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
-    cs43l22->volumeMuted = 1;
+    cs43l22->headphoneState = MUTED;
+    cs43l22->speakerState = MUTED;
 
     return HAL_OK;
 }
@@ -126,7 +127,8 @@ HAL_StatusTypeDef unmuteAllOutputs(CS43L22_HandleTypeDef* cs43l22){
     CS43_OPERATION_CHECK(readRegister(cs43l22, REG_PLAYBACK_CTRL_2, &tempRegisterValueRead));
     datasToWrite = tempRegisterValueRead & ~(0xF << 4);
     CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_PLAYBACK_CTRL_2, &datasToWrite));
-    cs43l22->volumeMuted = 0;
+    cs43l22->headphoneState = UNMUTED;
+    cs43l22->speakerState = UNMUTED;
 
     return HAL_OK;
 }
@@ -144,7 +146,25 @@ HAL_StatusTypeDef setHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22, uint8_t tar
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_A_VOL, &volumeAttenuation)); // HPA
 	CS43_OPERATION_CHECK(writeToRegister(cs43l22, REG_HEADPHONE_B_VOL, &volumeAttenuation)); // HPB
 
+	cs43l22->headphoneVolume = targetVolume;
+
 	return HAL_OK;
+}
+
+uint8_t getHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22){
+	return cs43l22->headphoneVolume;
+}
+
+uint8_t getSpeakerVolume(CS43L22_HandleTypeDef* cs43l22){
+	return cs43l22->speakerVolume;
+}
+
+outputState getHeadphoneOutputState(CS43L22_HandleTypeDef* cs43l22){
+	return cs43l22->headphoneState;
+}
+
+outputState getSpeakerOutputState(CS43L22_HandleTypeDef* cs43l22){
+	return cs43l22->speakerState;
 }
 
 

@@ -42,9 +42,14 @@
 #define HEADPHONE_MAX_VOL	100
 #define HEADPHONE_MIN_VOL	0
 
+typedef enum{
+	MUTED,
+	UNMUTED
+}outputState;
 
 // settings for startup
 typedef struct{
+	//public
 	GPIO_TypeDef*	resetPort;
 	uint8_t			resetPin;
 	uint32_t		sampleRateFrequency;
@@ -53,14 +58,17 @@ typedef struct{
 
 // settings for usage
 typedef struct{
+	// public
 	I2C_HandleTypeDef*   i2c;
 	I2S_HandleTypeDef*   i2s;
 	CS43L22_InitTypeDef  Init;
 	uint8_t deviceAddress;
-	uint8_t masterVolume;
-	uint8_t speakerVolume;
+
+	// private
+	uint8_t speakerVolume; // reserved for future use
 	uint8_t headphoneVolume;
-	uint8_t volumeMuted;
+	outputState speakerState;
+	outputState headphoneState;
 }CS43L22_HandleTypeDef;
 
 // private functions
@@ -84,6 +92,11 @@ HAL_StatusTypeDef muteheadphoneOutput(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef unmuteHeadphoneOutput(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef muteAllOutputs(CS43L22_HandleTypeDef* cs43l22);
 HAL_StatusTypeDef unmuteAllOutputs(CS43L22_HandleTypeDef* cs43l22);
+uint8_t getHeadphoneVolume(CS43L22_HandleTypeDef* cs43l22);
+uint8_t getSpeakerVolume(CS43L22_HandleTypeDef* cs43l22);
+outputState getHeadphoneOutputState(CS43L22_HandleTypeDef* cs43l22);
+outputState getSpeakerOutputState(CS43L22_HandleTypeDef* cs43l22);
+
 
 
 #endif /* CS43L22_H_ */
